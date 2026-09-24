@@ -15,6 +15,10 @@ const options = {
         url: `http://localhost:${process.env.PORT || 3000}`,
         description: "Servidor de desarrollo",
       },
+      {
+        url: `https://taller-1-rome-api-rho.vercel.app`,
+        description: "Servidor de produccion",
+      },
     ],
     tags: [
       { name: "Auth", description: "Registro y autenticación de usuarios" },
