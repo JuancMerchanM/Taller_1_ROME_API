@@ -17,12 +17,12 @@ import strategyRoutes from "./routes/strategyRoutes.mjs";
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 app.get("/api-docs.json", (req, res) => {
   res.setHeader("Content-Type", "application/json");
   res.send(swaggerSpec);
@@ -38,20 +38,12 @@ app.use("/api/units", unitRoutes);
 app.use("/api/strategies", strategyRoutes);
 
 app.get("/", (req, res) => {
-  res.json({ success: true, message: "Total War: Rome II API" });
+  res.json({
+    success: true,
+    message: "Total War: Rome II API"
+  });
 });
 
-const startServer = async () => {
-  try {
-    await connectDB(process.env.MONGODB_URI);
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
-  } catch (error) {
-    console.error("Failed to start server:", error.message);
-  }
-};
-
-startServer();
+await connectDB(process.env.MONGODB_URI);
 
 export default app;
