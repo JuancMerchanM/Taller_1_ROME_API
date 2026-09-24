@@ -1,8 +1,6 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { fileURLToPath } from "node:url";
-import swaggerUiDist from "swagger-ui-dist";
 import connectDB from "./driver/mongodb.mjs";
 import swaggerSpec from "./config/swagger.mjs";
 
@@ -22,10 +20,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use(
-  "/swagger-assets",
-  express.static(swaggerUiDist.absolutePath())
-);
+app.use("/swagger", express.static("public/swagger"));
 
 app.get("/api-docs", (req, res) => {
   res.send(`
@@ -39,15 +34,15 @@ app.get("/api-docs", (req, res) => {
         <link
           rel="stylesheet"
           type="text/css"
-          href="/swagger-assets/swagger-ui.css"
-        >
+          href="/swagger/swagger-ui.css"
+        />
       </head>
 
       <body>
         <div id="swagger-ui"></div>
 
-        <script src="/swagger-assets/swagger-ui-bundle.js"></script>
-        <script src="/swagger-assets/swagger-ui-standalone-preset.js"></script>
+        <script src="/swagger/swagger-ui-bundle.js"></script>
+        <script src="/swagger/swagger-ui-standalone-preset.js"></script>
 
         <script>
           window.onload = () => {
