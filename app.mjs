@@ -1,7 +1,8 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import swaggerUi from "swagger-ui-express";
+import { fileURLToPath } from "node:url";
+import swaggerUiDist from "swagger-ui-dist";
 import connectDB from "./driver/mongodb.mjs";
 import swaggerSpec from "./config/swagger.mjs";
 
@@ -21,7 +22,51 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use(
+  "/swagger-assets",
+  express.static(swaggerUiDist.absolutePath())
+);
+
+app.get("/api-docs", (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Total War: Rome II API - Swagger</title>
+
+        <link
+          rel="stylesheet"
+          type="text/css"
+          href="/swagger-assets/swagger-ui.css"
+        >
+      </head>
+
+      <body>
+        <div id="swagger-ui"></div>
+
+        <script src="/swagger-assets/swagger-ui-bundle.js"></script>
+        <script src="/swagger-assets/swagger-ui-standalone-preset.js"></script>
+
+        <script>
+          window.onload = () => {
+            window.ui = SwaggerUIBundle({
+              url: "/api-docs.json",
+              dom_id: "#swagger-ui",
+              deepLinking: true,
+              presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIStandalonePreset
+              ],
+              layout: "StandaloneLayout"
+            });
+          };
+        </script>
+      </body>
+    </html>
+  `);
+});
 
 app.get("/api-docs.json", (req, res) => {
   res.setHeader("Content-Type", "application/json");
